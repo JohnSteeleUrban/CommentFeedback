@@ -1,0 +1,157 @@
+﻿@model Comments.Models.Comment
+
+@{
+    ViewBag.Title = "Contact Us";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="container-fluid">
+        <div class="row">
+
+
+            <div class="col-sm-6 col-sm-offset-2">
+                <h4>Contact Us</h4>
+                <hr />
+                <br />
+                <p>Please fill out the information below</p>
+                <p>
+                    To contact us in regards to this site, please fill out the appropriate information below.
+                    <br />
+                </p>
+                <p>
+                    If you want us to contact you, please provide a name and email address and check the "Please Contact" box.
+                </p>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+
+            <div class="col-sm-10 col-sm-offset-2">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group pad">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Optional" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group pad">
+                    @Html.LabelFor(model => model.ContactEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ContactEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Optional" } })
+                        @Html.ValidationMessageFor(model => model.ContactEmail, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group pad">
+                    @Html.LabelFor(model => model.PleaseContact, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.PleaseContact)
+                            @Html.ValidationMessageFor(model => model.PleaseContact, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group pad">
+                    @Html.LabelFor(model => model.OriginatingSite, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.OriginatingSite, new { htmlAttributes = new { @class = "form-control", @id = "ble", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.OriginatingSite, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Comment1, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 pad2">
+                        @Html.EditorFor(model => model.Comment1, new { htmlAttributes = new { @class = "form-control", @id = "comment", @rows = 7 } })
+                        @Html.ValidationMessageFor(model => model.Comment1, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group" style="padding-top: 50px">
+                    @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 pad2">
+                        @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @Value = DateTime.Today.ToString("MM/dd/yyyy") } })
+                        @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group pad2">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Submit" class="btn btn-default" onclick="redirect()" />
+                        <div id="CountDown" style="display: none">
+                            <h4 style="color: red">You will be redirected in <span id="CountDownLabel"></span></h4>
+                        </div>
+                        <br />
+                        <br />
+                        <p>You will be directed back to your site upon submission.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .pad {
+        padding-bottom: 30px;
+    }
+
+    .pad2 {
+        padding-bottom: 10px;
+    }
+</style>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        var oldUrl;
+        $(function () {
+            //oldUrl = document.referrer;
+            //$('#ble').val($.cookie("previousUrl"));
+            $('#ble').val(getParameterByName("location"));
+            $.removeCookie('previousUrl');
+        });
+
+        $(document)
+            .keydown(function (e) {
+                if (e.keyCode == 76 && e.ctrlKey) {
+                    window.location.href = '@Url.Action("Login", "Account")';
+                }
+            });
+
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        function redirect() {
+            if ($('#comment').val() !== '') {
+                $('#redirect').fadeIn(1000);
+                var seconds = 5;
+                var dvCountDown = document.getElementById("CountDown");
+                var lblCount = document.getElementById("CountDownLabel");
+                dvCountDown.style.display = "block";
+                lblCount.innerHTML = seconds;
+                setInterval(function () {
+                    seconds--;
+                    lblCount.innerHTML = seconds;
+                    if (seconds == 0) {
+                        dvCountDown.style.display = "none";
+                    }
+                },
+                    1000);
+            }
+        }
+
+
+    </script>
+}

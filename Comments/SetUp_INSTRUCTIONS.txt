@@ -1,0 +1,17 @@
+﻿Set up for external site:
+
+        <script src="Scripts/jquery-1.12.4.js"></script>
+        <script src="Scripts/jquery.cookie.js"></script>
+          <script type="text/javascript">
+        $(document).ready(function () {
+            document.cookie = window.location.href;
+            $.cookie("previousUrl", window.location.href, { path: "/" });
+        });
+
+
+
+		The above was placed in the site master.
+
+Then I placed this in default on RTA, it can be  placed on any page.
+
+<p><a href="http://gismaps.pagnet.org/CommentApp/">Comments</a></p>
